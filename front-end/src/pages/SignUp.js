@@ -1,5 +1,6 @@
 import { Alert } from "react-alert";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 import {
   MDBBtn,
   MDBContainer,
@@ -12,6 +13,7 @@ import {
   MDBIcon,
   MDBCheckbox,
 } from "mdb-react-ui-kit";
+import Button from "react-bootstrap/Button";
 import { useState } from "react";
 
 function SignUp() {
@@ -122,9 +124,15 @@ function SignUp() {
                 />
               </div>
 
-              <MDBBtn className="mb-4" size="lg" onClick={onSubmit}>
+              <Button
+                // className="mb-4"
+                variant="dark"
+                size="lg"
+                onClick={onSubmit}
+                color="black"
+              >
                 Register
-              </MDBBtn>
+              </Button>
             </MDBCol>
 
             <MDBCol
