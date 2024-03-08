@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./Login.css";
 import Header from "../Components/Header";
 import { useNavigate } from "react-router-dom";
-
+import SimpleHeader from "../Components/SimpleHeader";
 import {
   MDBBtn,
   MDBContainer,
@@ -34,6 +34,7 @@ function LoginPage() {
 
   return (
     <div>
+      <SimpleHeader />
       <MDBContainer fluid>
         <MDBRow className="d-flex justify-content-center align-items-center h-100">
           <MDBCol col="12">
