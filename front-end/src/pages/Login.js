@@ -19,6 +19,7 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
+  //-----------WHERE WE WILL SEND TO API-----------------
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -80,7 +81,7 @@ function LoginPage() {
                 <div>
                   <p className="mb-0">
                     Don't have an account?{" "}
-                    <a href="#" class="text-white-50 fw-bold">
+                    <a href="/signup" class="text-white-50 fw-bold">
                       Sign Up
                     </a>
                   </p>
