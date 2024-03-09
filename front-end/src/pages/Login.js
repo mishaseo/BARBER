@@ -3,6 +3,7 @@ import "./Login.css";
 import Header from "../Components/Header";
 import { useNavigate } from "react-router-dom";
 import SimpleHeader from "../Components/SimpleHeader";
+import Button from "react-bootstrap/Button";
 import {
   MDBBtn,
   MDBContainer,
@@ -69,15 +70,15 @@ function LoginPage() {
                   onChange={(event) => setPassword(event.target.value)}
                 />
 
-                <MDBBtn
+                <Button
                   outline
-                  className="mx-2 px-5"
+                  variant="outline-light"
                   color="white"
                   size="lg"
                   onClick={onSubmit}
                 >
                   Login
-                </MDBBtn>
+                </Button>
 
                 <div>
                   <p className="mb-0">
