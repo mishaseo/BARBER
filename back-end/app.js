@@ -10,17 +10,19 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-//mongodb
+//----------------------------mongodb----------------------------
 const mongoose = require("mongoose");
-mongoose.connect(process.env.DATABASE_URL);
-const db = mongoose.connection;
-db.on("error", (error) => console.error(error));
-db.once("open", () => console.log("Connected to Database"));
+mongoose
+  .connect(process.env.DATABASE_URL, { dbName: "BarberUp" })
+  .then(() => {
+    console.log("Connection to the Atlas Cluster is successful!");
+  })
+  .catch((err) => console.error(err));
 
-//middleware
+//----------------------------middleware----------------------------
 app.use(express.json()); //allows us to post and get json from out endpoints
 
-// route logic
+// ----------------------------route logic----------------------------
 const routes = require("./routes");
 app.use("/", routes);
 
