@@ -22,6 +22,8 @@ mongoose
 //----------------------------middleware----------------------------
 app.use(express.json()); //allows us to post and get json from out endpoints
 
+//------------------------------Authentication---------------------------
+
 // ----------------------------route logic----------------------------
 const routes = require("./routes");
 app.use("/", routes);

@@ -5,6 +5,12 @@ const User = require("./schemas/user");
 //for hashing passwords
 const bcrypt = require("bcrypt");
 
+//Authentication
+const passport = require("passport");
+const { jwtOptions, jwtStrategy } = require("./jwt-config.js"); // import setup options for using JWT in passport
+passport.use(jwtStrategy);
+const jwt = require("jsonwebtoken");
+//--------------------------Functions--------------------------------
 function emailIsValid(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -23,22 +29,22 @@ router.get("/login", async (req, res) => {
       const match = await bcrypt.compare(password, user.password);
       //found a match
       if (match) {
+        //const token = jwt.sign(match, jwtOptions.secretOrKey);
         res.json({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          success: true,
+          //token: token,
         });
         //incorrect password
       } else {
-        res.json({
-          message: "Incorrect password",
-        });
+        res.status(401);
       }
     } catch (err) {
       res.json({
         succes: false,
       });
     }
+  } else {
+    res.status(401);
   }
 });
 
@@ -79,12 +85,16 @@ router.post("/signup", async (req, res) => {
 });
 
 //-------------------------TEST-------------------------------
-router.get("/", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const users = await User.find();
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
   }
-});
+);
 module.exports = router;

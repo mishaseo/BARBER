@@ -4,6 +4,7 @@ import Header from "../Components/Header";
 import { useNavigate } from "react-router-dom";
 import SimpleHeader from "../Components/SimpleHeader";
 import Button from "react-bootstrap/Button";
+import axios from "axios";
 import {
   MDBBtn,
   MDBContainer,
@@ -28,9 +29,24 @@ function LoginPage() {
       email: email,
       password: password,
     };
-
-    console.log(data);
-    navigate("/");
+    if (email && password) {
+      axios
+        .post(`${process.env.REACT_APP_URL}/login`, data)
+        .then((res) => {
+          if (res.data.success === true) {
+            localStorage.setItem("token", res.data.token);
+            console.log(localStorage);
+            window.location.href = "/";
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          //if error 401 is returned
+          if (err.response.status === 401) {
+            alert("Invalid email or password. Please try again!");
+          }
+        });
+    }
   };
 
   return (
