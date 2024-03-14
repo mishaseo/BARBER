@@ -22,6 +22,10 @@ function LoginPage() {
   const navigate = useNavigate();
 
   //-----------WHERE WE WILL SEND TO API-----------------
+  function emailIsValid(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -29,23 +33,32 @@ function LoginPage() {
       email: email,
       password: password,
     };
+    //if both fields filled out
     if (email && password) {
-      axios
-        .post(`${process.env.REACT_APP_URL}/login`, data)
-        .then((res) => {
-          if (res.data.success === true) {
-            localStorage.setItem("token", res.data.token);
-            console.log(localStorage);
-            window.location.href = "/";
-            navigate("/");
-          }
-        })
-        .catch((err) => {
-          //if error 401 is returned
-          if (err.response.status === 401) {
-            alert("Invalid email or password. Please try again!");
-          }
-        });
+      //check if the email is valid
+      if (emailIsValid(email)) {
+        axios
+          .post(`${process.env.REACT_APP_URL}/login`, data)
+          .then((res) => {
+            console.log(res.data);
+            //successful login
+            if (res.data.success === true) {
+              localStorage.setItem("token", res.data.token);
+              window.location.href = "/";
+            }
+          })
+          //user not found or password don't match
+          .catch((err) => {
+            //if error 401 is returned
+            if (err.response.status === 401) {
+              alert("Invalid email or password. Please try again!");
+            }
+          });
+      } else {
+        alert("Must input a valid email");
+      }
+    } else {
+      alert("All fields must be filled out");
     }
   };
 
@@ -69,7 +82,7 @@ function LoginPage() {
                   wrapperClass="mb-4 mx-5 w-100"
                   labelClass="text-white"
                   label="Email address"
-                  id="formControlLg"
+                  id="formControlLgEmail"
                   type="email"
                   size="lg"
                   value={email}
@@ -79,7 +92,7 @@ function LoginPage() {
                   wrapperClass="mb-4 mx-5 w-100"
                   labelClass="text-white"
                   label="Password"
-                  id="formControlLg"
+                  id="formControlLgPassword"
                   type="password"
                   size="lg"
                   value={password}

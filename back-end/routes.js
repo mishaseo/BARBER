@@ -11,40 +11,36 @@ const { jwtOptions, jwtStrategy } = require("./jwt-config.js"); // import setup 
 passport.use(jwtStrategy);
 const jwt = require("jsonwebtoken");
 //--------------------------Functions--------------------------------
-function emailIsValid(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 //----------------------LOGIN---------------------------------------
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (emailIsValid(email)) {
-    try {
-      //find user by email
-      const user = await User.findOne({
-        email: email,
-      });
-      //compare passwords
-      const match = await bcrypt.compare(password, user.password);
-      //found a match
-      if (match) {
-        //const token = jwt.sign(match, jwtOptions.secretOrKey);
-        res.json({
-          success: true,
-          //token: token,
-        });
-        //incorrect password
-      } else {
-        res.status(401);
-      }
-    } catch (err) {
+  try {
+    //find user by email
+    console.log("trying to login");
+
+    const user = await User.findOne({
+      email: email,
+    });
+    //compare passwords
+    const match = await bcrypt.compare(password, user.password);
+    //found a match
+    if (match) {
+      const token = jwt.sign(match, jwtOptions.secretOrKey);
       res.json({
-        succes: false,
+        success: true,
+        token: token,
       });
+      //incorrect password
+    } else {
+      res.status(401).json({ success: false });
     }
-  } else {
-    res.status(401);
+  } catch (err) {
+    console.log("not found");
+    res.status(401).json({
+      succes: false,
+    });
   }
 });
 
@@ -59,42 +55,44 @@ router.post("/signup", async (req, res) => {
     email,
     password: hashpass,
   });
-  //check that email is valid
-  if (emailIsValid(email)) {
-    //check if the email already exists
-    var existing = null;
+
+  //check if the email already exists
+  var existing = null;
+  try {
+    existing = await User.findOne({ email: email });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+  //save if email does not exist
+  if (existing == null) {
     try {
-      existing = await User.findOne({ email: email });
+      const newUser = await user.save();
+      res.status(201).json({ message: "success" }); //201 successfully created an object
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(400).json({ message: err.message }); //400 client data error
     }
-    //save if email does not exist
-    if (existing == null) {
-      try {
-        const newUser = await user.save();
-        res.status(201).json(newUser); //201 successfully created an object
-      } catch (err) {
-        res.status(400).json({ message: err.message }); //400 client data error
-      }
-    }
-    //send error if email exists already
-    else {
-      res.status(400).json({ message: "Email already exists" });
-    }
+  }
+  //send error if email exists already
+  else {
+    res.status(400).json({ message: "Email already exists" });
   }
 });
 
-//-------------------------TEST-------------------------------
+//-------------------------CHECK IF USER IS LOGGED IN-------------------------------
 router.get(
-  "/",
+  "/checkLogin",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    try {
-      const users = await User.find();
-      res.json(users);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
+    console.log(req.user.id);
+    res.json({
+      success: true,
+      user: {
+        id: req.user.id,
+        firstname: req.user.firstname,
+        lastname: req.user.lastname,
+      },
+      message: "Authenticated user",
+    });
   }
 );
 module.exports = router;

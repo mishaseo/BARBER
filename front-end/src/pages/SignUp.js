@@ -2,6 +2,7 @@ import { Alert } from "react-alert";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import SimpleHeader from "../Components/SimpleHeader";
+import axios from "axios";
 import {
   MDBBtn,
   MDBContainer,
@@ -28,6 +29,10 @@ function SignUp() {
   const navigate = useNavigate();
 
   //------------WHERE WE WILL SEND TO API---------------
+  function emailIsValid(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -40,13 +45,29 @@ function SignUp() {
     };
 
     console.log(data);
-    if (!firstName || !lastName || !email || !password || !confirmPass) {
+    if (!emailIsValid(email)) {
+      alert("Must enter a valid email");
+    } else if (!firstName || !lastName || !email || !password || !confirmPass) {
       alert("You must fill out all fields to continue");
     } else if (confirmPass !== password) {
       alert("Passwords do not match!");
     } else {
-      alert("Success! Creating account...");
-      navigate("/login");
+      axios
+        .post(`${process.env.REACT_APP_URL}/signup`, data)
+        .then((res) => {
+          if (res.data.message === "Email already exists") {
+            alert("Email already exists. Please try again!");
+            window.location.href = "/signup";
+          } else if (res.data.message === "success") {
+            alert(
+              "Succesfully signed up! Redirecting you to the login page to get started!"
+            );
+            window.location.href = "/login";
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+        });
     }
   };
   return (
