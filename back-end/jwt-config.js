@@ -18,7 +18,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async function (
     const user = await User.findById(jwt_payload.id);
     done(null, user);
   } catch (err) {
-    done(err, null);
+    done(err, false);
   }
 });
 

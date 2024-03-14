@@ -22,11 +22,10 @@ function Header() {
         headers: { Authorization: `JWT ${jwtToken}` }, // pass the token, if any, to the server
       })
       .then((res) => {
-        //console.log(res);
         //if we get status 200, then user is signed in
         if (res.data.success === true) {
+          setName(res.data.firstName + " " + res.data.lastName);
           setLogged(true);
-          setName(res.data.user.firstname + " " + res.data.user.lastname);
         } else {
           setLogged(false);
         }

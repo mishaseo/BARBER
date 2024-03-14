@@ -27,7 +27,7 @@ router.post("/login", async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     //found a match
     if (match) {
-      const token = jwt.sign(match, jwtOptions.secretOrKey);
+      const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey);
       res.json({
         success: true,
         token: token,
@@ -83,16 +83,19 @@ router.get(
   "/checkLogin",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    console.log(req.user.id);
-    res.json({
-      success: true,
-      user: {
-        id: req.user.id,
-        firstname: req.user.firstname,
-        lastname: req.user.lastname,
-      },
-      message: "Authenticated user",
-    });
+    try {
+      const user = await User.findById(req.user.id);
+      console.log(user);
+      res.status(200).json({
+        success: true,
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      });
+    } catch (err) {
+      res.status(401).json({ success: false });
+    }
   }
 );
 module.exports = router;
