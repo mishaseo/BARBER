@@ -48,9 +48,14 @@ function Header() {
           {logged ? (
             <Nav>
               <b>
-                <i>
-                  <Nav.Link>Hello {name}! </Nav.Link>
-                </i>
+                <Nav.Link
+                  style={{
+                    color: "black",
+                    fontFamily: '"Kaushan Script", cursive',
+                  }}
+                >
+                  Hello {name}!{" "}
+                </Nav.Link>
               </b>
               <Nav.Link href={"/"}>Home</Nav.Link>
               <Nav.Link

@@ -40,7 +40,6 @@ function LoginPage() {
         axios
           .post(`${process.env.REACT_APP_URL}/login`, data)
           .then((res) => {
-            console.log(res.data);
             //successful login
             if (res.data.success === true) {
               localStorage.setItem("token", res.data.token);
