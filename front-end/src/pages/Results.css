@@ -1,0 +1,49 @@
+#heading {
+  color: black;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  text-shadow: 3px 3px white;
+  padding-bottom: 30px;
+}
+#headingBox {
+  border-bottom: 10px;
+}
+
+#infoCard {
+  text-align: center;
+  margin: auto;
+  max-width: fit-content;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 60px;
+  justify-content: center;
+  list-style-type: none;
+  position: relative;
+  margin: auto;
+  max-width: fit-content;
+}
+
+.pagination a {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: white;
+}
+
+.pagination__link {
+  font-weight: bold;
+}
+
+.pagination__link--active a {
+  color: #fff;
+  background: white;
+}
+
+.pagination__link--disabled a {
+  color: rgb(198, 197, 202);
+  border: 1px solid rgb(198, 197, 202);
+}
